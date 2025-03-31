@@ -2,6 +2,7 @@
 ################################################################################################################################
 ### Hal's First Script For Running SC via UMU with Proton on *NVIDIA GPU* ver 1.1
 ### !! Auto-Updates GE-Proton !!
+echo "Welcome to Hal's First Script!"
 ################################################################################################################################
 ### !! SET SC PREFIX LOCATION HERE !!
 WINEPFX="$HOME/Games/star-citizen"
@@ -43,30 +44,24 @@ export __GL_SHADER_DISK_CACHE_SKIP_CLEANUP=1
 ### Mesa (AMD/Intel) shader cache options | NOT USED
 #export MESA_SHADER_CACHE_DIR="$WINEPREFIX"
 #export MESA_SHADER_CACHE_MAX_SIZE="10G"
-
-
-
 ################################################################
-### Cleanup Function | CURRENTLY BROKEN
-cleanup() {
-    echo "Cleaning up..."
-    pkill -TERM -P $$
-    exit 0
-}
-
-trap cleanup SIGINT SIGTERM
-
-
-
+### Print all variables and env
+ENV_PRINT=0 # Set to 1 to print all env for troubleshooting
+if [[ "${ENV_PRINT:-0}" -eq 1 ]]; then
+    echo "### Printing all set variables ###"
+    # Print all variables (including environment variables)
+    set
+    # Alternative: print only non-environment variables
+    # ( set -o posix ; set )
+fi
 ################################################################
-###         Launch Launcher Using UMU Launcher & GE-Proton
-
-nice -10 umu-run "${WINEPFX}/drive_c/Program Files/Roberts Space Industries/RSI Launcher/RSI Launcher.exe"
-
-################################################################
-### Cleanup Function Contd | BROKEN
-################################################################
-UMU_PID=$!
-###
-wait $UMU_PID
+###         Launch RSI Launcher with latest GE-Proton via UMU
+sleep 1
+echo "Running Star Citizen!"
+sleep .4
+echo "Main ENV Set to:" # Set ENV_PRINT on line 29 to print all variables
+echo "Wine Prefix set to $WINEPFX"
+echo "Proton Ver: $PROTONPATH"
+sleep .7
+nice -10 umu-run "${WINEPFX}/drive_c/Program Files/Roberts Space Industries/RSI Launcher/RSI Launcher.exe" &
 ################################################################
