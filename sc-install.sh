@@ -13,9 +13,9 @@ echo -e "\n\033[1;33m
   ██║  ██║██║  ██║███████╗
   ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝
 \033[0m"
-echo "Hal's RSI Launcher installation script ver 1.2 now running..."
+echo "Hal's RSI Launcher installation script ver 1.2.1 now running..."
 ################################################################################################################################
-INSTALL_PATH="$HOME/Games/star-citizen-test" # sets install path, default is ~/Games/star-citizen,
+INSTALL_PATH="$HOME/Games/star-citizen" # sets install path, default is ~/Games/star-citizen,
 ### Set Variables for Download:
 ################################################################
 DOWNLOAD_SOURCE="https://install.robertsspaceindustries.com/rel/2/RSI%20Launcher-Setup-2.3.1.exe"

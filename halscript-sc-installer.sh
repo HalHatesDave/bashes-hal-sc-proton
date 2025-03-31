@@ -15,7 +15,7 @@ echo -e "\n\033[1;33m
 echo "halscripts-sc tools installer script is now running..."
 sleep 1
 ################################################################################################################################
-VERSION="1.2 "
+VERSION="1.2.1"
 INSTALL_DIR="/usr/local/bin"           # System-wide install
 USER_INSTALL_DIR="$HOME/.local/bin"    # User install
 DESKTOP_DIR="/usr/share/applications"  # System start menu
