@@ -1,4 +1,4 @@
-A super simple set of scripts I created to help install and run Star Citizen with UMU-Launcher and GE-Proton.
+A super simple set of scripts I created to help install and run Star Citizen with UMU-Launcher and GE-Proton and a **NVIDIA GPU**.
 
 halscript-sc-installer.sh will install the following two scripts, create shortcuts, and run them in succession:
 
