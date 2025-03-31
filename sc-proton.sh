@@ -2,7 +2,16 @@
 ################################################################################################################################
 ### Hal's First Script For Running SC via UMU with Proton on *NVIDIA GPU* ver 1.1
 ### !! Auto-Updates GE-Proton !!
-echo "Welcome to Hal's First Script!"
+### Hello:
+echo -e "\n\033[1;33m
+  ██╗  ██╗ █████╗ ██╗
+  ██║  ██║██╔══██╗██║
+  ███████║███████║██║
+  ██╔══██║██╔══██║██║
+  ██║  ██║██║  ██║███████╗
+  ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝
+\033[0m"
+echo "Hal's Star Citizen X Linux X UMU x GE-Proton script now running..."
 ################################################################################################################################
 ### !! SET SC PREFIX LOCATION HERE !!
 WINEPFX="$HOME/Games/star-citizen"
