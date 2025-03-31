@@ -12,9 +12,10 @@ echo -e "\n\033[1;33m
   ██║  ██║██║  ██║███████╗
   ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝
 \033[0m"
-echo "halscript-SC installation script now running..."
+echo "halscripts-sc tools installer script is now running..."
+sleep 1
 ################################################################################################################################
-VERSION="1.1"
+VERSION="1.2"
 INSTALL_DIR="/usr/local/bin"           # System-wide install
 USER_INSTALL_DIR="$HOME/.local/bin"    # User install
 DESKTOP_DIR="/usr/share/applications"  # System start menu
@@ -30,9 +31,9 @@ NC='\033[0m'
 # Scripts to manage
 SCRIPTS=("sc-install.sh" "sc-proton.sh")
 
-# -------------------------------
+################################################################################################################################
 # INSTALLATION FUNCTIONS
-# -------------------------------
+################################################################################################################################
 
 install_scripts() {
   echo -e "${GREEN}Installing halscript-sc${VERSION}...${NC}"
@@ -75,9 +76,9 @@ EOF
   fi
 }
 
-# -------------------------------
+################################################################################################################################
 # UNINSTALL FUNCTIONS
-# -------------------------------
+################################################################################################################################
 
 uninstall_scripts() {
   echo -e "${YELLOW}Uninstalling halscript-sc...${NC}"
@@ -100,9 +101,9 @@ uninstall_scripts() {
   echo -e "${GREEN}Uninstallation complete!${NC}"
 }
 
-# -------------------------------
+################################################################################################################################
 # MAIN EXECUTION
-# -------------------------------
+################################################################################################################################
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -122,11 +123,12 @@ else
   echo "  export PATH=\"\$HOME/.local/bin:\$PATH\" >> ~/.bashrc"
 fi
 echo -e "${GREEN}Installation complete!${NC}"
-echo "You can now run:"
+echo "Installed:"
 echo "  $INSTALL_DIR/sc-install"
 echo "  $INSTALL_DIR/sc-proton"
 echo ""
-echo "Please run sc-install now, then sc-proton to play Star Citizen."
+sleep 1
+echo "sc-install will now run"
 echo ""
 sleep 1
 echo "A desktop shortcut to launch Star Citizen has been created"
@@ -134,3 +136,34 @@ echo ""
 echo "To uninstall:"
 echo "  sudo $0 --uninstall  # For system-wide install"
 echo "  $0 --uninstall       # For user install"
+sleep 1
+echo "Running sc-install.sh to install RSI Launcher"
+echo -e "\n\033[1;36mVerifying installation...\033[0m"
+sleep .8
+################################################################################################################################
+# Run sc-install
+################################################################################################################################
+# Check if sc-install is in PATH
+if command -v sc-install &>/dev/null; then
+    echo -e "\033[1;32msc-install is already available in PATH\033[0m"
+    echo -e "\n\033[1;33mLaunching sc-install...\033[0m"
+    sc-install
+else
+    # Check for local sc-install.sh
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    SC_INSTALL_SH="$SCRIPT_DIR/sc-install.sh"
+
+    if [[ -f "$SC_INSTALL_SH" ]]; then
+        echo -e "\033[1;33msc-install not in PATH, but found local script\033[0m"
+        echo -e "\n\033[1;33mLaunching sc-install.sh...\033[0m"
+        chmod +x "$SC_INSTALL_SH"
+        "$SC_INSTALL_SH"
+    else
+        echo -e "\033[1;31mError: sc-install not found in PATH or locally\033[0m"
+        echo "You may need to manually add the installation directory to your PATH or download sc-install and place it next to this file"
+    fi
+fi
+
+sleep .7
+echo -e "\n\033[1;32m halscript-sc install complete!\033[0m"
+################################################################################################################################

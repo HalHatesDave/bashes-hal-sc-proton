@@ -13,9 +13,9 @@ echo -e "\n\033[1;33m
   ██║  ██║██║  ██║███████╗
   ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝
 \033[0m"
-echo "Hal's Star Citizen install script now running..."
+echo "Hal's RSI Launcher installation script v1.2 now running..."
 ################################################################################################################################
-INSTALL_PATH="$HOME/Games/star-citizen-test" # sets install path, default to ~/Games/star-citizen,
+INSTALL_PATH="$HOME/Games/star-citizen-test" # sets install path, default is ~/Games/star-citizen,
 ### Set Variables for Download:
 ################################################################
 DOWNLOAD_SOURCE="https://install.robertsspaceindustries.com/rel/2/RSI%20Launcher-Setup-2.3.1.exe"
@@ -65,6 +65,40 @@ echo "In the launcher, you will need to change the game installation DIR to some
 echo "!! Make sure to change the linux /'s to Windows \ in the path!!"
 sleep 5
 echo "Launching with UMU..."
-umu-run "$DEST_FILE"
+umu-run "$DEST_FILE" &
+UMU_PID=$!
+
+wait $UMU_PID
+
+# Check if sc-proton is installed (in PATH)
+if ! command -v sc-proton &>/dev/null; then
+    echo -e "\n\033[1;33msc-proton not found in PATH\033[0m"
+
+    # Check if sc-proton.sh exists in the same directory as this script
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    SC_PROTON_SH="$SCRIPT_DIR/sc-proton.sh"
+
+    if [[ -f "$SC_PROTON_SH" ]]; then
+        echo -e "Found sc-proton.sh at $SC_PROTON_SH"
+        read -p "Would you like to run the RSI Launcher now? [Y/n] " response
+        case "$response" in
+            [nN][oO]|[nN])
+                echo "Skipping sc-proton.sh execution"
+                ;;
+            *)
+                echo "Executing sc-proton.sh..."
+                chmod +x "$SC_PROTON_SH"
+                "$SC_PROTON_SH"
+                ;;
+        esac
+    else
+        echo -e "\033[1;31mError: sc-proton.sh not found beside this script\033[0m"
+        echo "Please ensure sc-proton.sh exists in: $SCRIPT_DIR"
+    fi
+else
+    echo -e "\n\033[1;32msc-proton is already installed\033[0m"
+fi
+
+echo -e "\n\033[1;33m RSI installation script complete!\033[0m"
 ################################################################
 

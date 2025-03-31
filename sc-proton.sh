@@ -11,10 +11,10 @@ echo -e "\n\033[1;33m
   ██║  ██║██║  ██║███████╗
   ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝
 \033[0m"
-echo "Hal's Star Citizen X Linux X UMU x GE-Proton script now running..."
+echo "Hal's Star Citizen X Linux X UMU x GE-Proton script v1.2 now running..."
 ################################################################################################################################
 ### !! SET SC PREFIX LOCATION HERE !!
-WINEPFX="$HOME/Games/star-citizen"
+WINEPFX="$HOME/Games/star-citizen-test" # Default is ~/Games/star-citizen
 ################################################################
 ### REQUIRED ENV
 export WINEPREFIX="$WINEPFX"
@@ -68,9 +68,9 @@ fi
 sleep 1
 echo "Running Star Citizen!"
 sleep .4
-echo "Main ENV Set to:" # Set ENV_PRINT on line 29 to print all variables
+echo "Main ENV Set to:" # Set ENV_PRINT on line 58 to print all variables
 echo "Wine Prefix set to $WINEPFX"
 echo "Proton Ver: $PROTONPATH"
 sleep .7
-nice -10 umu-run "${WINEPFX}/drive_c/Program Files/Roberts Space Industries/RSI Launcher/RSI Launcher.exe" &
+nice -10 umu-run "${WINEPFX}/drive_c/Program Files/Roberts Space Industries/RSI Launcher/RSI Launcher.exe"
 ################################################################
