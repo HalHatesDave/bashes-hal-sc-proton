@@ -11,7 +11,7 @@ echo -e "\n\033[1;33m
   ██║  ██║██║  ██║███████╗
   ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝
 \033[0m"
-echo "Hal's Star Citizen X Linux X UMU x GE-Proton script v1.2 now running..."
+echo "Hal's Star Citizen X Linux X UMU x GE-Proton script ver 1.2 now running..."
 ################################################################################################################################
 ### !! SET SC PREFIX LOCATION HERE !!
 WINEPFX="$HOME/Games/star-citizen-test" # Default is ~/Games/star-citizen
