@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ################################################################################################################################
-### Hal's First Script For Running SC via UMU with Proton on *NVIDIA GPU* ver 1.1
+### Hal's First Script For Running SC via UMU with Proton on *NVIDIA GPUs* ver 1.1
 ### !! Auto-Updates GE-Proton !!
 ### Hello:
 echo -e "\n\033[1;33m
