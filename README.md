@@ -9,6 +9,9 @@ hal-sc-play.sh sets up some env that work well for me, then launches Star Citize
 Distros:
 
 Debian	✅	Install umu-run manually.
+
 Ubuntu	✅	Same as Debian.
+
 Arch	✅	Works out-of-the-box with AUR umu.
+
 Fedora	⚠️	May need desktop-file-utils and wget.
