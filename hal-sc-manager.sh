@@ -1,75 +1,84 @@
 #!/usr/bin/env bash
 ################################################################################################################################
-###         hal-rsi-manager.sh - currently only installs hal-rsi-installer and hal-rsi-launcher but will be more useful later
-###         Note: You can also just run hal-rsi-installer.sh and then hal-rsi-launcher.sh.
+###         hal-sc-manager.sh - Manages RSI Launcher Installation and hal-sc-play script installation
+###         Usage:
+###           Install:        ./hal-sc-manager.sh
+###           Uninstall:      ./hal-sc-manager.sh --uninstall
+###           Update hal-sc-play script: ./hal-sc-manager.sh --update
 ################################################################################################################################
-### Hello:
-echo -e "\n\033[1;33m
- /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\
-( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )
- > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <
- /\_/\   ██╗  ██╗ █████╗ ██╗        /\_/\
-( o.o )  ██║  ██║██╔══██╗██║       ( o.o )
- > ^ <   ███████║███████║██║        > ^ <
- /\_/\   ██╔══██║██╔══██║██║        /\_/\
-( o.o )  ██║  ██║██║  ██║███████╗  ( o.o )
- > ^ <   ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝   > ^ <
- /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\
-( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )
- > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <
-\033[0m"
-echo "hal-rsi-manager.sh is now running..."
-sleep 1
-################################################################################################################################
-VERSION="1.2.2"
-INSTALL_DIR="/usr/local/bin"           # System-wide install
-USER_INSTALL_DIR="$HOME/.local/bin"    # User install
-DESKTOP_DIR="/usr/share/applications"  # System start menu
-USER_DESKTOP_DIR="$HOME/Desktop"       # User desktop
-DESKTOP_NAME="Star-Citizen.desktop"
 
-# Colors
+# ASCII Art and startup message
+echo -e "\n\033[1;33m
+  ██╗  ██╗ █████╗ ██╗
+  ██║  ██║██╔══██╗██║
+  ███████║███████║██║
+  ██╔══██║██╔══██║██║
+  ██║  ██║██║  ██║███████╗
+  ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝
+\033[0m"
+echo "hal-sc-manager.sh is now running..."
+sleep 1
+
+################################################################################################################################
+# CONFIGURATION SECTION
+################################################################################################################################
+
+VERSION="2.0"
+INSTALL_DIR="/usr/local/bin"           # System-wide install directory
+USER_INSTALL_DIR="$HOME/.local/bin"    # User install directory
+DESKTOP_DIR="/usr/share/applications"  # System start menu directory
+USER_DESKTOP_DIR="$HOME/Desktop"       # User desktop directory
+DESKTOP_NAME="Star-Citizen.desktop"    # Desktop shortcut name
+
+# Colors for terminal output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-NC='\033[0m'
+NC='\033[0m' # No Color
 
-# Scripts to manage
-SCRIPTS=("hal-rsi-installer.sh" "hal-rsi-launcher.sh")
+# hal-sc-play script name
+LAUNCHER_SCRIPT="hal-sc-play.sh"
+GITHUB_LAUNCHER_URL="https://raw.githubusercontent.com/HalHatesDave/halscripts-starcitizen/main/hal-sc-play.sh"
+
+# Default installation paths
+DEFAULT_INSTALL_PATH="$HOME/Games/star-citizen"
+DEFAULT_DOWNLOAD_DIR="$HOME/Downloads"
+RSI_DOWNLOAD_SOURCE="https://install.robertsspaceindustries.com/rel/2/RSI%20Launcher-Setup-2.3.1.exe"
 
 ################################################################################################################################
-# INSTALLATION FUNCTIONS
+# hal-sc-play SCRIPT INSTALLATION FUNCTIONS
 ################################################################################################################################
 
-install_scripts() {
-  echo -e "${GREEN}Installing hal-rsi-launcher${VERSION}...${NC}"
+# Installs the hal-sc-play script to the target directory
+install_play_script() {
+  echo -e "${GREEN}Installing hal-sc-play...${NC}"
 
   local target_dir="$1"
   mkdir -p "$target_dir"
 
-  for script in "${SCRIPTS[@]}"; do
-    if [ ! -f "$SCRIPT_DIR/$script" ]; then
-      echo -e "${RED}Error: Missing $script in package${NC}"
-      continue
-    fi
+  if [ ! -f "$SCRIPT_DIR/$LAUNCHER_SCRIPT" ]; then
+    echo -e "${RED}Error: Missing $LAUNCHER_SCRIPT in package${NC}"
+    return 1
+  fi
 
-    dest_name="${script%.sh}"
-    echo "Installing $script as $dest_name..."
-    install -m 755 "$SCRIPT_DIR/$script" "$target_dir/$dest_name" || {
-      echo -e "${RED}Failed to install $dest_name${NC}"
-      return 1
-    }
-  done
+  dest_name="${LAUNCHER_SCRIPT%.sh}"
+  echo "Installing $LAUNCHER_SCRIPT as $dest_name..."
+  install -m 755 "$SCRIPT_DIR/$LAUNCHER_SCRIPT" "$target_dir/$dest_name" || {
+    echo -e "${RED}Failed to install $dest_name${NC}"
+    return 1
+  }
 }
 
+# Creates a desktop shortcut for hal-sc-play as Star Citizen
 create_desktop_entry() {
   local target_dir="$1"
+  local install_path="$2"
   echo -e "${YELLOW}Creating desktop shortcut...${NC}"
 
   cat > "$target_dir/$DESKTOP_NAME" <<EOF
 [Desktop Entry]
 Name=Star Citizen
-Exec=$INSTALL_DIR/hal-rsi-launcher
+Exec=$INSTALL_DIR/hal-sc-play --wineprefix "$install_path"
 Icon=application-x-executable
 Terminal=true
 Type=Application
@@ -86,25 +95,134 @@ EOF
 # UNINSTALL FUNCTIONS
 ################################################################################################################################
 
-uninstall_scripts() {
-  echo -e "${YELLOW}Uninstalling hal-rsi scripts...${NC}"
+# Removes all installed files and shortcuts
+uninstall() {
+  echo -e "${YELLOW}Uninstalling hal-sc-play scripts...${NC}"
 
   # System-wide uninstall
-  for script in "${SCRIPTS[@]}"; do
-    dest_name="${script%.sh}"
-    rm -f "$INSTALL_DIR/$dest_name" && echo "Removed $INSTALL_DIR/$dest_name"
-  done
+  dest_name="${LAUNCHER_SCRIPT%.sh}"
+  rm -f "$INSTALL_DIR/$dest_name" && echo "Removed $INSTALL_DIR/$dest_name"
   rm -f "$DESKTOP_DIR/$DESKTOP_NAME"
   [ -d "$DESKTOP_DIR" ] && update-desktop-database "$DESKTOP_DIR"
 
   # User-specific uninstall
-  for script in "${SCRIPTS[@]}"; do
-    dest_name="${script%.sh}"
-    rm -f "$USER_INSTALL_DIR/$dest_name" && echo "Removed $USER_INSTALL_DIR/$dest_name"
-  done
+  rm -f "$USER_INSTALL_DIR/$dest_name" && echo "Removed $USER_INSTALL_DIR/$dest_name"
   rm -f "$USER_DESKTOP_DIR/$DESKTOP_NAME"
 
   echo -e "${GREEN}Uninstallation complete!${NC}"
+}
+
+################################################################################################################################
+# STAR CITIZEN INSTALLATION FUNCTION
+################################################################################################################################
+
+# Handles the actual Star Citizen installation using UMU
+install_rsi() {
+  local install_path="$1"
+  local download_dir="$2"
+
+  FILENAME=$(basename "$RSI_DOWNLOAD_SOURCE")
+  DEST_FILE="$download_dir/$FILENAME"
+
+  echo "Downloading $FILENAME..."
+
+  # Check if file exists and prompt for redownload
+  if [[ -f "$DEST_FILE" ]]; then
+      echo "File already exists: $DEST_FILE"
+      read -p "Do you want to redownload it? (y/N): " choice
+      case "$choice" in
+          y|Y ) echo "Redownloading..."; rm "$DEST_FILE" ;;
+          * ) echo "Using existing file." ;;
+      esac
+  fi
+
+  # Download if file doesn't exist
+  if [[ ! -f "$DEST_FILE" ]]; then
+      echo "Downloading $FILENAME..."
+      wget -O "$DEST_FILE" "$RSI_DOWNLOAD_SOURCE"
+
+      if [[ $? -ne 0 ]]; then
+          echo "Download failed!"
+          return 1
+      fi
+  fi
+
+  chmod +x "$DEST_FILE"
+
+  # Set up environment variables for UMU
+  echo "Applying ENV..."
+  export WINEPREFIX="$install_path"
+  export GAMEID="umu-starcitizen"
+  export STORE=none
+  export PROTONPATH="GE-Proton"
+
+  # User instructions
+  echo -e "\n${YELLOW}HEADS UP! After installing:${NC}"
+  echo "1. In the launcher, change the game installation directory to:"
+  echo "   Z:\\path\\to\\prefix\\drive_c\\Program Files\\Roberts Space Industries"
+  echo "2. Remember to use Windows-style backslashes in the path"
+  sleep 5
+
+  # Launch the installer
+  echo "Launching with UMU..."
+  umu-run "$DEST_FILE" &
+  UMU_PID=$!
+  wait $UMU_PID
+}
+
+################################################################################################################################
+# PLAY SCRIPT UPDATE FUNCTION
+################################################################################################################################
+
+# Updates the hal-sc-play script from GitHub
+update_launch_script() {
+  echo -e "${YELLOW}Checking for hal-sc-play updates on GitHub...${NC}"
+
+  # Temporary file for download
+  TEMP_FILE=$(mktemp)
+
+  # Download latest hal-sc-play.sh from GitHub
+  echo "Downloading latest hal-sc-play.sh from GitHub..."
+  if ! wget -q "$GITHUB_LAUNCHER_URL" -O "$TEMP_FILE"; then
+    echo -e "${RED}Error: Failed to download hal-sc-play from GitHub${NC}"
+    rm -f "$TEMP_FILE"
+    return 1
+  fi
+
+  # Verify downloaded file looks like a script
+  if ! grep -q '#!/usr/bin/env bash' "$TEMP_FILE"; then
+    echo -e "${RED}Error: Downloaded file doesn't appear to be a valid script${NC}"
+    rm -f "$TEMP_FILE"
+    return 1
+  fi
+
+  # Find installed hal-sc-play locations
+  local installed_locations=()
+  if [ -f "$INSTALL_DIR/hal-sc-play" ]; then
+    installed_locations+=("$INSTALL_DIR/hal-sc-play")
+  fi
+  if [ -f "$USER_INSTALL_DIR/hal-sc-play" ]; then
+    installed_locations+=("$USER_INSTALL_DIR/hal-sc-play")
+  fi
+
+  if [ ${#installed_locations[@]} -eq 0 ]; then
+    echo -e "${YELLOW}No installed hal-sc-play found - installing new one${NC}"
+    installed_locations+=("$USER_INSTALL_DIR/hal-sc-play")
+    mkdir -p "$USER_INSTALL_DIR"
+  fi
+
+  # Update all found installations
+  for location in "${installed_locations[@]}"; do
+    echo "Updating hal-sc-play at $location"
+    install -m 755 "$TEMP_FILE" "$location" || {
+      echo -e "${RED}Failed to update hal-sc-play at $location${NC}"
+      rm -f "$TEMP_FILE"
+      return 1
+    }
+  done
+
+  rm -f "$TEMP_FILE"
+  echo -e "${GREEN}hal-sc-playupdated successfully from GitHub!${NC}"
 }
 
 ################################################################################################################################
@@ -115,61 +233,62 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Handle uninstall
 if [ "$1" = "--uninstall" ]; then
-  uninstall_scripts
+  uninstall
+  exit 0
+fi
+
+# Handle hal-sc-play update
+if [ "$1" = "--update" ]; then
+  update_launch_script
+  exit 0
+fi
+
+# Check if Star Citizen is already installed
+INSTALL_PATH="$DEFAULT_INSTALL_PATH"
+if [ -d "$INSTALL_PATH" ]; then
+  echo -e "${YELLOW}Star Citizen appears to be already installed at $INSTALL_PATH${NC}"
+  echo "To reinstall, please remove the directory first or specify a different path"
+  echo "To uninstall, run: $0 --uninstall"
+
+  # Install/update hal-sc-play even if game is already installed
+  if [ "$(id -u)" -eq 0 ]; then
+    install_play_script "$INSTALL_DIR" && create_desktop_entry "$DESKTOP_DIR" "$INSTALL_PATH"
+  else
+    echo -e "${YELLOW}Installing hal-sc-play for current user only (run as root for system-wide install)${NC}"
+    install_play_script "$USER_INSTALL_DIR" && create_desktop_entry "$USER_DESKTOP_DIR" "$INSTALL_PATH"
+    echo -e "${YELLOW}Ensure $USER_INSTALL_DIR is in your PATH:${NC}"
+    echo "  export PATH=\"\$HOME/.local/bin:\$PATH\" >> ~/.bashrc"
+  fi
+
   exit 0
 fi
 
 # Normal installation
+echo -e "${GREEN}Proceeding with Star Citizen installation...${NC}"
+
+# Install game
+install_rsi "$INSTALL_PATH" "$DEFAULT_DOWNLOAD_DIR"
+
+# Install hal-sc-play
 if [ "$(id -u)" -eq 0 ]; then
-  install_scripts "$INSTALL_DIR" && create_desktop_entry "$DESKTOP_DIR"
+  install_play_script "$INSTALL_DIR" && create_desktop_entry "$DESKTOP_DIR" "$INSTALL_PATH"
 else
-  echo -e "${YELLOW}Installing for current user only (run as root for system-wide install)${NC}"
-  install_scripts "$USER_INSTALL_DIR" && create_desktop_entry "$USER_DESKTOP_DIR"
+  echo -e "${YELLOW}Installing hal-sc-play for current user only (run as root for system-wide install)${NC}"
+  install_play_script "$USER_INSTALL_DIR" && create_desktop_entry "$USER_DESKTOP_DIR" "$INSTALL_PATH"
   echo -e "${YELLOW}Ensure $USER_INSTALL_DIR is in your PATH:${NC}"
   echo "  export PATH=\"\$HOME/.local/bin:\$PATH\" >> ~/.bashrc"
 fi
+
 echo -e "${GREEN}Installation complete!${NC}"
 echo "Installed:"
-echo "  $INSTALL_DIR/hal-rsi-installer"
-echo "  $INSTALL_DIR/hal-rsi-launcher"
+echo "  Game at: $INSTALL_PATH"
+echo "  Launcher at: $INSTALL_DIR/hal-sc-play or $USER_INSTALL_DIR/hal-sc-play"
 echo ""
-sleep 1
-echo "hal-rsi-installer.sh will now run"
-echo ""
-sleep 1
 echo "A desktop shortcut to launch Star Citizen has been created"
 echo ""
 echo "To uninstall:"
 echo "  sudo $0 --uninstall  # For system-wide install"
 echo "  $0 --uninstall       # For user install"
-sleep 1
-echo "Running hal-rsi-installer.sh to install RSI Launcher"
-echo -e "\n\033[1;36mVerifying installation...\033[0m"
-sleep .8
-################################################################################################################################
-# Run hal-rsi-installer.sh
-################################################################################################################################
-# Check if hal-rsi-installer is in PATH
-if command -v hal-rsi-installer &>/dev/null; then
-    echo -e "\033[1;32mhal-rsi-installer is already available in PATH\033[0m"
-    echo -e "\n\033[1;33mLaunching hal-rsi-installer...\033[0m"
-    hal-rsi-installer
-else
-    # Check for local hal-rsi-installer.sh
-    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    SC_INSTALL_SH="$SCRIPT_DIR/hal-rsi-installer.sh"
-
-    if [[ -f "$SC_INSTALL_SH" ]]; then
-        echo -e "\033[1;33mhal-rsi-installer not in PATH, but found local script\033[0m"
-        echo -e "\n\033[1;33mLaunching hal-rsi-installer.sh...\033[0m"
-        chmod +x "$SC_INSTALL_SH"
-        "$SC_INSTALL_SH"
-    else
-        echo -e "\033[1;31mError: hal-rsi-installer not found in PATH or locally\033[0m"
-        echo "You may need to manually add the installation directory to your PATH or download hal-rsi-installer.sh and place it next to this file"
-    fi
-fi
-
-sleep .7
-echo -e "\n\033[1;32m hal-rsi-manager.sh install complete!\033[0m"
-################################################################################################################################
+echo ""
+echo "To update the hal-sc-play script:"
+echo "  $0 --update"
