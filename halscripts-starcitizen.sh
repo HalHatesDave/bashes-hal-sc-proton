@@ -1,7 +1,7 @@
 #!/bin/bash
 ################################################################################################################################
-###         halscript-sc installer script
-###         Note: You can also just run sc-install.sh and then sc-proton-sh
+###         halscripts-starcitizen.sh base installer script
+###         Note: You can also just run sc-install.sh and then sc-proton-sh. Or just sc-proton.sh if SC is already installed
 ################################################################################################################################
 ### Hello:
 echo -e "\n\033[1;33m
