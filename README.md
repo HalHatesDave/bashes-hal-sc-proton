@@ -1,4 +1,4 @@
-A super simple set of scripts I created to help install and run Star Citizen with UMU-Launcher and GE-Proton and a **NVIDIA GPU**.
+A super simple set of scripts I created to help install and run Star Citizen with UMU-Launcher and GE-Proton on **NVIDIA GPUs**.
 
 halscripts-starcitizen.sh will install the following two scripts, create shortcuts, and run them in succession:
 
@@ -9,3 +9,5 @@ SC-Proton sets up some env that work well for me, then launches Star Citizen usi
 Technically you can just use sc-install and sc-proton. In fact if you already have SC installed, you can just grab sc-proton and modify the WINEPFX variable to launch.
 
 This is my first script that I actually use, so yay! :sunglas:
+
+Note: This is meant for users with NVIDIA GPUs
