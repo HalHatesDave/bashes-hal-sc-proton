@@ -5,3 +5,10 @@ hal-sc-manager.sh will by default install the hal-sc-play script, create shortcu
 hal-sc-play.sh sets up some env that work well for me, then launches Star Citizen using UMU with a -10 niceness. You can edit the script to enable mangoHUD if you use it. 
 
 # Note: This is meant for users with NVIDIA GPUs
+
+Distros:
+
+Debian	✅	Install umu-run manually.
+Ubuntu	✅	Same as Debian.
+Arch	✅	Works out-of-the-box with AUR umu.
+Fedora	⚠️	May need desktop-file-utils and wget.
