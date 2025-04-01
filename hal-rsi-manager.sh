@@ -1,7 +1,7 @@
 #!/bin/bash
 ################################################################################################################################
-###         halscripts-starcitizen.sh base installer script
-###         Note: You can also just run sc-install.sh and then sc-proton-sh. Or just sc-proton.sh if SC is already installed
+###         hal-rsi-manager.sh - currently only installs hal-rsi-installer and hal-rsi-launcher but will be more useful later
+###         Note: You can also just run hal-rsi-installer.sh and then hal-rsi-launcher.sh.
 ################################################################################################################################
 ### Hello:
 echo -e "\n\033[1;33m
@@ -12,7 +12,7 @@ echo -e "\n\033[1;33m
   ██║  ██║██║  ██║███████╗
   ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝
 \033[0m"
-echo "halscripts-sc tools installer script is now running..."
+echo "hal-rsi-manager.sh is now running..."
 sleep 1
 ################################################################################################################################
 VERSION="1.2.1"
@@ -29,14 +29,14 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 # Scripts to manage
-SCRIPTS=("sc-install.sh" "sc-proton.sh")
+SCRIPTS=("hal-rsi-installer.sh" "hal-rsi-launcher.sh")
 
 ################################################################################################################################
 # INSTALLATION FUNCTIONS
 ################################################################################################################################
 
 install_scripts() {
-  echo -e "${GREEN}Installing halscript-sc${VERSION}...${NC}"
+  echo -e "${GREEN}Installing hal-rsi-launcher${VERSION}...${NC}"
 
   local target_dir="$1"
   mkdir -p "$target_dir"
@@ -63,7 +63,7 @@ create_desktop_entry() {
   cat > "$target_dir/$DESKTOP_NAME" <<EOF
 [Desktop Entry]
 Name=Star Citizen
-Exec=$INSTALL_DIR/sc-proton
+Exec=$INSTALL_DIR/hal-rsi-launcher
 Icon=application-x-executable
 Terminal=true
 Type=Application
@@ -81,7 +81,7 @@ EOF
 ################################################################################################################################
 
 uninstall_scripts() {
-  echo -e "${YELLOW}Uninstalling halscript-sc...${NC}"
+  echo -e "${YELLOW}Uninstalling hal-rsi scripts...${NC}"
 
   # System-wide uninstall
   for script in "${SCRIPTS[@]}"; do
@@ -124,11 +124,11 @@ else
 fi
 echo -e "${GREEN}Installation complete!${NC}"
 echo "Installed:"
-echo "  $INSTALL_DIR/sc-install"
-echo "  $INSTALL_DIR/sc-proton"
+echo "  $INSTALL_DIR/hal-rsi-installer"
+echo "  $INSTALL_DIR/hal-rsi-launcher"
 echo ""
 sleep 1
-echo "sc-install will now run"
+echo "hal-rsi-installer.sh will now run"
 echo ""
 sleep 1
 echo "A desktop shortcut to launch Star Citizen has been created"
@@ -137,33 +137,33 @@ echo "To uninstall:"
 echo "  sudo $0 --uninstall  # For system-wide install"
 echo "  $0 --uninstall       # For user install"
 sleep 1
-echo "Running sc-install.sh to install RSI Launcher"
+echo "Running hal-rsi-installer.sh to install RSI Launcher"
 echo -e "\n\033[1;36mVerifying installation...\033[0m"
 sleep .8
 ################################################################################################################################
-# Run sc-install
+# Run hal-rsi-installer.sh
 ################################################################################################################################
-# Check if sc-install is in PATH
-if command -v sc-install &>/dev/null; then
-    echo -e "\033[1;32msc-install is already available in PATH\033[0m"
-    echo -e "\n\033[1;33mLaunching sc-install...\033[0m"
-    sc-install
+# Check if hal-rsi-installer is in PATH
+if command -v hal-rsi-installer &>/dev/null; then
+    echo -e "\033[1;32mhal-rsi-installer is already available in PATH\033[0m"
+    echo -e "\n\033[1;33mLaunching hal-rsi-installer...\033[0m"
+    hal-rsi-installer
 else
-    # Check for local sc-install.sh
+    # Check for local hal-rsi-installer.sh
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    SC_INSTALL_SH="$SCRIPT_DIR/sc-install.sh"
+    SC_INSTALL_SH="$SCRIPT_DIR/hal-rsi-installer.sh"
 
     if [[ -f "$SC_INSTALL_SH" ]]; then
-        echo -e "\033[1;33msc-install not in PATH, but found local script\033[0m"
-        echo -e "\n\033[1;33mLaunching sc-install.sh...\033[0m"
+        echo -e "\033[1;33mhal-rsi-installer not in PATH, but found local script\033[0m"
+        echo -e "\n\033[1;33mLaunching hal-rsi-installer.sh...\033[0m"
         chmod +x "$SC_INSTALL_SH"
         "$SC_INSTALL_SH"
     else
-        echo -e "\033[1;31mError: sc-install not found in PATH or locally\033[0m"
-        echo "You may need to manually add the installation directory to your PATH or download sc-install and place it next to this file"
+        echo -e "\033[1;31mError: hal-rsi-installer not found in PATH or locally\033[0m"
+        echo "You may need to manually add the installation directory to your PATH or download hal-rsi-installer.sh and place it next to this file"
     fi
 fi
 
 sleep .7
-echo -e "\n\033[1;32m halscript-sc install complete!\033[0m"
+echo -e "\n\033[1;32m hal-rsi-manager.sh install complete!\033[0m"
 ################################################################################################################################
