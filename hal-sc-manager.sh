@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-################################################################################################################################
-###         hal-sc-manager.sh - Manages RSI Launcher Installation and hal-sc-play script installation
+#########################################################################################
+###       hal-sc-manager.sh - Manages RSI Launcher Installation and hal-sc-play script installation
 ###         Usage:
-###           Install:        ./hal-sc-manager.sh
-###           Uninstall:      ./hal-sc-manager.sh --uninstall
-###           Update hal-sc-play script: ./hal-sc-manager.sh --update
-################################################################################################################################
+###       Install:        ./hal-sc-manager.sh
+###       Uninstall:      ./hal-sc-manager.sh --uninstall
+###       Update hal-sc-play script: ./hal-sc-manager.sh --update
+#########################################################################################
 
 # ASCII Art and startup message
 echo -e "\n\033[1;33m
@@ -16,14 +16,14 @@ echo -e "\n\033[1;33m
 ( o.o )  ██║  ██║██║  ██║███████╗   ( o.o )
  > ^ <   ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝    > ^ <
 \033[0m"
-echo "hal-sc-manager.sh is now running..."
+echo "hal-sc-manager.sh ${VERSION} is now running..."
 sleep 1
 
-################################################################################################################################
+#########################################################################################
 # CONFIGURATION SECTION
-################################################################################################################################
+#########################################################################################
 
-VERSION="2.0"
+VERSION="2.1"
 INSTALL_DIR="/usr/local/bin"           # System-wide install directory
 USER_INSTALL_DIR="$HOME/.local/bin"    # User install directory
 DESKTOP_DIR="/usr/share/applications"  # System start menu directory
@@ -46,8 +46,42 @@ DEFAULT_DOWNLOAD_DIR="$HOME/Downloads"
 RSI_DOWNLOAD_SOURCE="https://install.robertsspaceindustries.com/rel/2/RSI%20Launcher-Setup-2.3.1.exe"
 
 ################################################################################################################################
-# hal-sc-play SCRIPT INSTALLATION FUNCTIONS
+# HELP FUNCTION
 ################################################################################################################################
+
+show_help() {
+    echo -e "${GREEN}hal-sc-manager.sh - Star Citizen Installation Manager${NC}"
+    echo "Version: $VERSION"
+    echo ""
+    echo "This script manages the installation of Star Citizen and the hal-sc-play launcher script."
+    echo ""
+    echo "Usage:"
+    echo "  ./hal-sc-manager.sh [OPTION]"
+    echo ""
+    echo "Options:"
+    echo "  --install       Install Star Citizen and hal-sc-play (default if no option is provided)"
+    echo "  --uninstall     Remove all installed components (game, launcher script, shortcuts)"
+    echo "  --update        Update the hal-sc-play script from GitHub"
+    echo "  --help          Show this help message and exit"
+    echo ""
+    echo "Features:"
+    echo "  - Installs the RSI Launcher using UMU (Universal Linux Wine Launcher)"
+    echo "  - Manages both system-wide and user-specific installations"
+    echo "  - Creates desktop shortcuts for easy launching"
+    echo "  - Provides update functionality for the launcher script"
+    echo ""
+    echo "Installation paths:"
+    echo "  Game:          $DEFAULT_INSTALL_PATH"
+    echo "  System-wide:   $INSTALL_DIR"
+    echo "  User-specific: $USER_INSTALL_DIR"
+    echo ""
+    echo "Note: Run with sudo for system-wide installation, or as user for local installation."
+    exit 0
+}
+
+#########################################################################################
+# hal-sc-play SCRIPT INSTALLATION FUNCTIONS
+#########################################################################################
 
 # Installs the hal-sc-play script to the target directory
 install_play_script() {
@@ -91,9 +125,9 @@ EOF
   fi
 }
 
-################################################################################################################################
+#########################################################################################
 # UNINSTALL FUNCTIONS
-################################################################################################################################
+#########################################################################################
 
 # Removes all installed files and shortcuts
 uninstall() {
@@ -112,11 +146,11 @@ uninstall() {
   echo -e "${GREEN}Uninstallation complete!${NC}"
 }
 
-################################################################################################################################
-# STAR CITIZEN INSTALLATION FUNCTION
-################################################################################################################################
+#########################################################################################
+# RSI INSTALLATION FUNCTION
+#########################################################################################
 
-# Handles the actual Star Citizen installation using UMU
+# Handles the actual RSI Launcher installation using UMU
 install_rsi() {
   local install_path="$1"
   local download_dir="$2"
@@ -170,9 +204,9 @@ install_rsi() {
   wait $UMU_PID
 }
 
-################################################################################################################################
+#########################################################################################
 # PLAY SCRIPT UPDATE FUNCTION
-################################################################################################################################
+#########################################################################################
 
 # Updates the hal-sc-play script from GitHub
 update_launch_script() {
@@ -225,11 +259,16 @@ update_launch_script() {
   echo -e "${GREEN}hal-sc-playupdated successfully from GitHub!${NC}"
 }
 
-################################################################################################################################
+#########################################################################################
 # MAIN EXECUTION
-################################################################################################################################
+#########################################################################################
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Handle help flag
+if [ "$1" = "--help" ]; then
+  show_help
+fi
 
 # Handle uninstall
 if [ "$1" = "--uninstall" ]; then
